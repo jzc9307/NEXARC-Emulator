@@ -15,6 +15,9 @@ import subprocess
 import sys
 import tempfile
 import zipfile
+sys.path.insert(0,str(Path(__file__).resolve().parent))
+import release_catalog
+import dmg
 
 ROOT = Path(__file__).resolve().parents[1]
 SEMVER = re.compile(r"(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:alpha|beta|rc)\.[1-9]\d*))?")
@@ -81,27 +84,23 @@ def notes_for(changelog, version):
     raise ValueError(f'CHANGELOG.md has no entry for {version}.')
 
 
-def write_metadata(root, version, build, changelog):
+def write_metadata(root, version, build, changelog, prepared=False, catalog=None):
     plist_path = root / 'Resources/Info.plist'
     info = plistlib.loads(plist_path.read_bytes())
     info['CFBundleShortVersionString'] = version.split('-')[0]
     info['CFBundleVersion'] = str(build)
     info['NEXARCReleaseVersion'] = version
-    readme = (root / 'README.md').read_text()
-    marker = r'<!-- nexarc:version -->.*?<!-- /nexarc:version -->'
-    block = f'<!-- nexarc:version -->\n**Newest version: `{version}`** · [Version history](docs/RELEASES.md) · [Release guide](docs/GITHUB.md)\n<!-- /nexarc:version -->'
-    if not re.search(marker, readme, re.S): raise ValueError('README version markers are missing.')
-    readme = re.sub(marker, lambda _: block, readme, flags=re.S)
-    rows = []
-    for entry in sections(changelog):
-        rows.append(f'| `{entry[1]}` | {entry[2]} | {"**Newest**" if entry[1] == version else "Previous"} |')
-    history = '# NEXARC version history\n\n'
-    history += 'This includes local/prepared versions. Published downloads live in GitHub → Releases.\n\n'
-    history += '| Version | Date | Status |\n|---|---|---|\n' + '\n'.join(rows) + '\n\n'
-    history += 'See [CHANGELOG.md](../CHANGELOG.md) for changes. Releases keep their original tags and downloads; publishing a new one does not replace older releases. GitHub marks the newest normal release **Latest**. Alpha, beta and rc versions are prereleases.\n'
+    catalog=catalog if catalog is not None else release_catalog.load(root)
+    entries=[(entry[1],entry[2]) for entry in sections(changelog)]
+    for name,date in entries:catalog['versions'].setdefault(name,{'status':'local'})
+    if prepared:catalog['versions'][version]={'status':'prepared'}
+    readme=release_catalog.update((root/'README.md').read_text(),catalog,entries,version)
+    history='# NEXARC versions and downloads\n\nThe complete version history and download table now live in the [main README](../README.md#download--install).\n\n'
+    history+=release_catalog.table(catalog,entries,version).replace('(CHANGELOG.md#','(../CHANGELOG.md#')+'\n'
     updates = {root/'VERSION': version+'\n', root/'BUILD_NUMBER': str(build)+'\n',
                plist_path: plistlib.dumps(info, sort_keys=False), root/'README.md': readme,
-               root/'CHANGELOG.md': changelog, root/'docs/RELEASES.md': history}
+               root/'CHANGELOG.md': changelog, root/'docs/RELEASES.md': history,
+               root/release_catalog.CATALOG:json.dumps(catalog,indent=2)+'\n'}
     original = {p: p.read_bytes() if p.exists() else None for p in updates}
     try:
         for path, data in updates.items(): atomic(path, data)
@@ -121,6 +120,9 @@ def check_metadata(root=ROOT):
     notes_for((root/'CHANGELOG.md').read_text(), version)
     if f'**Newest version: `{version}`**' not in (root/'README.md').read_text():
         raise ValueError('README version differs. Run release.py sync.')
+    entries=[(entry[1],entry[2]) for entry in sections((root/'CHANGELOG.md').read_text())]
+    readme=(root/'README.md').read_text()
+    if release_catalog.update(readme,release_catalog.load(root),entries,version)!=readme:raise ValueError('README downloads are out of date. Run release.py sync.')
     return version, build
 
 
@@ -142,7 +144,7 @@ def prepare(root=ROOT, bump='patch', prerelease=None, notes=None):
     today = dt.date.today().isoformat()
     replacement = f'## [Unreleased]\n\n_No changes recorded yet._\n\n## [{version}] - {today}\n\n{notes}\n\n'
     updated = changelog[:unreleased.start()] + replacement + changelog[unreleased.end():]
-    write_metadata(root, version, build+1, updated)
+    write_metadata(root, version, build+1, updated, prepared=True)
     atomic(pending, json.dumps({'version':version,'previous':current,'build':build+1}, indent=2)+'\n')
     return version
 
@@ -226,12 +228,45 @@ def package(root=ROOT):
     # Archive Git objects, not checkout bytes (which may have CRLF/smudge conversions).
     run(['git','archive','--format=zip','--prefix=NEXARC/','-o',str(source_zip),'HEAD'],root)
     atomic(dest/'NOTES.md',notes_for((root/'CHANGELOG.md').read_text(),version)+'\n')
-    assets=[app_zip,source_zip]
+    installer=dest/f'NEXARC-{version}-macOS-arm64.dmg'
+    dmg.create(app,installer,version,build)
+    assets=[installer,app_zip,source_zip]
     sums=''.join(f'{sha(path)}  {path.name}\n' for path in assets)
     atomic(dest/'SHA256SUMS.txt',sums);assets.append(dest/'SHA256SUMS.txt')
     manifest={'version':version,'build':build,'commit':commit,'assets':{p.name:sha(p) for p in assets}}
     atomic(dest/'manifest.json',json.dumps(manifest,indent=2)+'\n')
     return dest
+
+
+def finish_publication(root, version, manifest, pending):
+    """Confirm real assets, then publish only the README/catalog documentation update."""
+    catalog=release_catalog.load(root);repo=catalog['repository'];tag='v'+version
+    record=json.loads(run(['gh','api',f'repos/{repo}/releases/tags/{tag}'],root).stdout)
+    if record.get('draft') or record.get('tag_name')!=tag:raise ValueError('The release is not publicly published yet.')
+    required=f'NEXARC-{version}-macOS-arm64.dmg'
+    if required not in manifest['assets']:raise ValueError('This package has no DMG. Repackage with the current release workflow.')
+    actual={asset['name']:asset for asset in record.get('assets',[])}
+    for name,digest in manifest['assets'].items():
+        if name not in actual:raise ValueError('Published release is missing '+name+'; no history update was pushed.')
+        if actual[name].get('state')!='uploaded':raise ValueError('A published asset is not completely uploaded: '+name)
+        remote_digest=actual[name].get('digest')
+        if remote_digest and remote_digest!='sha256:'+digest:raise ValueError('Published asset checksum differs: '+name)
+    refs=run(['git','ls-remote','--tags','origin',f'refs/tags/{tag}',f'refs/tags/{tag}^{{}}'],root).stdout.splitlines()
+    peeled=next((line.split()[0] for line in refs if line.endswith('^{}')),None)
+    target=peeled or (refs[0].split()[0] if refs else None)
+    if target!=manifest['commit']:raise ValueError('The remote release tag differs from the packaged commit.')
+    if not record.get('published_at'):raise ValueError('GitHub has not confirmed the publication date.')
+    catalog['versions'][version]={'status':'published','published_at':record['published_at'],'commit':manifest['commit']}
+    current,build=state(root);write_metadata(root,current,build,(root/'CHANGELOG.md').read_text(),catalog=catalog)
+    docs=['README.md','docs/RELEASES.md',release_catalog.CATALOG]
+    run(['git','add','--',*docs],root)
+    if run(['git','diff','--cached','--quiet','--',*docs],root,check=False).returncode:
+        run(['git','commit','-m',f'Document NEXARC {version} DMG download','--',*docs],root,capture=False)
+    data=json.loads(pending.read_text());data['documentation_commit']=run(['git','rev-parse','HEAD'],root).stdout.strip()
+    atomic(pending,json.dumps(data,indent=2)+'\n')
+    run(['git','push','origin','HEAD:refs/heads/main'],root,capture=False)
+    pending.unlink()
+    return record['html_url']
 
 
 def publish(root=ROOT, dry_run=False, draft=False):
@@ -246,12 +281,16 @@ def publish(root=ROOT, dry_run=False, draft=False):
     if not re.fullmatch(r'(?:https://github\.com/|git@github\.com:)[\w.-]+/[\w.-]+(?:\.git)?',origin.stdout.strip()):
         raise ValueError('Use a normal GitHub HTTPS/SSH origin without embedded credentials.')
     dest=local_cache(root,'.release/current');manifest=json.loads((dest/'manifest.json').read_text())
-    if manifest['version']!=version or manifest['commit']!=commit:raise ValueError('Repackage the current commit before publishing.')
+    pending_data=json.loads(pending.read_text())
+    if manifest['version']!=version or commit not in {manifest['commit'],pending_data.get('documentation_commit')}:raise ValueError('Repackage the current commit before publishing.')
+    if f'NEXARC-{version}-macOS-arm64.dmg' not in manifest['assets']:raise ValueError('This package has no DMG. Run release.py package again.')
     for name,digest in manifest['assets'].items():
         if Path(name).name!=name or sha(dest/name)!=digest:raise ValueError('A release asset changed; repackage first.')
+    repository=re.sub(r'^(?:https://github\.com/|git@github\.com:)','',origin.stdout.strip()).removesuffix('.git')
+    if repository!=release_catalog.load(root)['repository']:raise ValueError('Origin differs from the download repository in release-history.json; fix it before publishing.')
     tag='v'+version;is_pre='-' in version
     local_tag=run(['git','rev-parse','--verify',f'refs/tags/{tag}^{{commit}}'],root,check=False)
-    if local_tag.returncode==0 and local_tag.stdout.strip()!=commit:
+    if local_tag.returncode==0 and local_tag.stdout.strip()!=manifest['commit']:
         raise ValueError('This version tag already identifies different code. Never move or overwrite a release tag.')
     commands=[]
     if local_tag.returncode:commands.append(['git','tag','-a',tag,'-m',f'NEXARC {version}'])
@@ -263,6 +302,7 @@ def publish(root=ROOT, dry_run=False, draft=False):
     if not draft:commands.append(['gh','release','edit',tag,'--draft=false','--latest=false' if is_pre else '--latest=true'])
     if dry_run:
         for command in commands:print(shlex.join(command))
+        if not draft:print('Then verify the published DMG/assets and push the README all-versions download table.')
         return
     if not shutil.which('gh'):raise ValueError('GitHub CLI is not installed. Install gh and run gh auth login; see docs/GITHUB.md.')
     run(['gh','auth','status'],root)
@@ -277,17 +317,20 @@ def publish(root=ROOT, dry_run=False, draft=False):
     resume=False
     if existing.returncode==0:
         record=json.loads(existing.stdout)
-        if not record['isDraft']:raise ValueError('This release is already published. Keep it intact and prepare a new version.')
+        if not record['isDraft']:
+            url=finish_publication(root,version,manifest,pending);print('Published release verified; README downloads updated:',url);return
         resume=True
     elif 'not found' not in existing.stderr.lower():
         raise ValueError('Could not check the GitHub release; no push was attempted. '+existing.stderr.strip())
+    if commit!=manifest['commit']:raise ValueError('Only a published-release documentation retry can use a later documentation commit.')
     for command in commands:
         if command==create and resume:
             run(['gh','release','upload',tag,*[str(dest/n) for n in manifest['assets']],'--clobber'],root,capture=False)
             run(['gh','release','edit',tag,'--notes-file',str(dest/'NOTES.md')],root)
         else:run(command,root,capture=False)
-    if not draft:pending.unlink()
-    print(f'NEXARC {version} '+('draft uploaded; publish it when ready.' if draft else 'published.'))
+    if not draft:
+        url=finish_publication(root,version,manifest,pending);print('Published:',url)
+    else:print(f'NEXARC {version} draft uploaded; publish it when ready.')
 
 
 def main():
@@ -296,12 +339,12 @@ def main():
     sub.add_parser('check');sub.add_parser('sync');sub.add_parser('preflight')
     plan=sub.add_parser('plan');plan.add_argument('--bump',choices=['patch','minor','major'],default='patch')
     prep=sub.add_parser('prepare');prep.add_argument('--bump',choices=['patch','minor','major'],default='patch');prep.add_argument('--prerelease',choices=['alpha','beta','rc']);prep.add_argument('--notes-file',type=Path)
-    sub.add_parser('package')
+    sub.add_parser('package');sub.add_parser('dmg')
     pub=sub.add_parser('publish');pub.add_argument('--dry-run',action='store_true');pub.add_argument('--draft',action='store_true')
     args=parser.parse_args()
     held_lock=None
     try:
-        if args.command in {"sync","prepare","package","publish"} and not getattr(args,"dry_run",False):held_lock=acquire_lock()
+        if args.command in {"sync","prepare","package","publish","dmg"} and not getattr(args,"dry_run",False):held_lock=acquire_lock()
         if args.command=='check':print('Version metadata OK:',*check_metadata())
         elif args.command=='sync':
             version,build=state();write_metadata(ROOT,version,build,(ROOT/'CHANGELOG.md').read_text());print('Synchronized',version)
@@ -311,6 +354,8 @@ def main():
             print('Pending release:',(ROOT/'.release/prepared.json').exists())
         elif args.command=='prepare':print('Prepared',prepare(bump=args.bump,prerelease=args.prerelease,notes=args.notes_file.read_text() if args.notes_file else None))
         elif args.command=='package':print('Packaged',package())
+        elif args.command=='dmg':
+            version,build=check_metadata();project,output=layout();print('Installer:',dmg.create(project/'NEXARC.app',output/f'NEXARC-{version}-macOS-arm64.dmg',version,build))
         else:publish(dry_run=args.dry_run,draft=args.draft)
     except (ValueError,FileNotFoundError,subprocess.CalledProcessError,KeyError,json.JSONDecodeError) as error:
         print('Release stopped:',str(error),file=sys.stderr);return 1

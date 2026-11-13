@@ -72,3 +72,10 @@ Cursor protection is confined to the owned retro player process. It blocks its a
 - Native UI inspection covered the six-slot grid, recovery dialog, compact custom pause buttons/slot tabs, per-game controls and independent-screen editor. Window presets provide Small, Standard, Large, Fit to display and Custom; tests check legacy defaults, both dimensions, display margins and persistence.
 
 Run `bash scripts/test.sh` for the repeatable model, save integrity, configuration, patching, pixel and input checks. UI/gameplay checks require a Mac desktop session. Restart an already open NEXARC app after replacing the app bundle so the new launch configuration is used.
+
+
+## README and versioned DMG distribution — 13 November 2026
+
+The main README now follows the user's FootballManager-Simulation documentation structure: original NEXARC banner/badges, a short introduction, installation instructions, full version table, real app screenshots, feature tables and linked guides. Gallery screenshots use an isolated homebrew-only library. The existing Warp icon is exported for an owner avatar and a separate 1280 × 640 social preview; these files do not change GitHub's account-level avatar or About settings.
+
+The local DMG was created, checksum-verified, mounted read-only, and its NEXARC.app signature/version, Applications shortcut and install guide checked before ejecting. Each release packages a versioned DMG, app ZIP, source ZIP and checksums. The publication catalog distinguishes local, prepared and actually published versions; live DMG links and Latest in the main README appear only after GitHub confirms the uploaded assets/tag. Regression tests cover missing/different assets, preserving stable Latest during a prerelease, older entries and retries of a failed documentation push. No GitHub release or account-setting update was performed during these checks.

@@ -1,9 +1,7 @@
-# NEXARC version history
+# NEXARC versions and downloads
 
-This includes local/prepared versions. Published downloads live in GitHub → Releases.
+The complete version history and download table now live in the [main README](../README.md#download--install).
 
-| Version | Date | Status |
-|---|---|---|
-| `0.3.0` | 2026-11-13 | **Newest** |
-
-See [CHANGELOG.md](../CHANGELOG.md) for changes. Releases keep their original tags and downloads; publishing a new one does not replace older releases. GitHub marks the newest normal release **Latest**. Alpha, beta and rc versions are prereleases.
+| Version | Date | Status | macOS installer | Release notes |
+|---|---|---|---|---|
+| `0.3.0` | 2026-11-13 | **Newest** · Local build | Not published | [Changes](../CHANGELOG.md#030---2026-11-13) |

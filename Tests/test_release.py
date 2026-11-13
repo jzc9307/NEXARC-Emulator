@@ -1,11 +1,13 @@
 import contextlib
 import importlib.util
 import io
+import json
 from pathlib import Path
 import plistlib
 import subprocess
 import tempfile
 import unittest
+from unittest import mock
 import zipfile
 
 SPEC=importlib.util.spec_from_file_location('nexarc_release',Path(__file__).resolve().parents[1]/'scripts/release.py')
@@ -14,6 +16,9 @@ release=importlib.util.module_from_spec(SPEC);SPEC.loader.exec_module(release)
 
 class ReleaseTests(unittest.TestCase):
     def setUp(self):
+        def fake_dmg(app,target,version,build):
+            Path(target).write_bytes(b'dmg-fixture:'+version.encode());return target
+        patch=mock.patch.object(release.dmg,'create',side_effect=fake_dmg);patch.start();self.addCleanup(patch.stop)
         self.temp=tempfile.TemporaryDirectory(prefix='nexarc-release-test-');self.addCleanup(self.temp.cleanup)
         self.root=Path(self.temp.name)
         (self.root/'Resources').mkdir();(self.root/'docs').mkdir()
@@ -25,6 +30,7 @@ class ReleaseTests(unittest.TestCase):
         (self.root/'CHANGELOG.md').write_text(changelog)
         (self.root/'.gitignore').write_text('/.release/\n/dist/\n*.app/\n/work/\n**/bin/\n**/obj/\n')
         release.write_metadata(self.root,'0.3.0',3,changelog)
+        data=release.release_catalog.load(self.root);data['repository']='example/NEXARC';(self.root/'release-history.json').write_text(__import__('json').dumps(data));release.write_metadata(self.root,'0.3.0',3,changelog)
         self.git('init','-b','main');self.git('config','user.name','NEXARC test fixture');self.git('config','user.email','fixture@example.invalid')
 
     def git(self,*args):
@@ -59,7 +65,7 @@ class ReleaseTests(unittest.TestCase):
         self.assertEqual(engine,(self.root/'Resources/CoreInfo.plist').read_bytes())
         history=(self.root/'docs/RELEASES.md').read_text()
         self.assertIn('| `0.3.1` |',history);self.assertIn('| `0.3.0` |',history)
-        self.assertEqual(history.count('| **Newest** |'),1)
+        self.assertEqual(history.count('**Newest**'),1)
         self.assertIn('Local baseline.',(self.root/'CHANGELOG.md').read_text())
 
     def test_pending_release_cannot_bump_twice_on_retry(self):
@@ -85,6 +91,7 @@ class ReleaseTests(unittest.TestCase):
             names=archive.namelist();self.assertIn('NEXARC/VERSION',names)
             self.assertFalse(any('private.keys' in name or '/.git/' in name or '/dist/' in name for name in names))
         self.assertTrue((dest/'SHA256SUMS.txt').is_file())
+        self.assertTrue((dest/'NEXARC-0.3.1-macOS-arm64.dmg').is_file())
 
     def test_source_archive_uses_committed_bytes_not_hidden_checkout_edits(self):
         self.package();(self.root/'.gitattributes').write_text('*.md text eol=lf\n');self.commit()
@@ -147,6 +154,78 @@ class ReleaseTests(unittest.TestCase):
         self.commit();self.git('tag','v0.3.1');self.prepared();self.commit();self.built();release.package(self.root)
         self.git('remote','add','origin','https://github.com/example/NEXARC.git')
         with self.assertRaisesRegex(ValueError,'different code'):release.publish(self.root,dry_run=True)
+
+    def published_record(self,manifest):
+        return {'draft':False,'tag_name':'v'+manifest['version'],'published_at':'2026-11-13T06:00:00Z',
+                'html_url':'https://github.com/example/NEXARC/releases/tag/v'+manifest['version'],
+                'assets':[{'name':name,'state':'uploaded','digest':'sha256:'+digest} for name,digest in manifest['assets'].items()]}
+
+    def publication_runner(self,record,commit,fail_push=False):
+        original=release.run
+        def fake(args,root=release.ROOT,capture=True,check=True):
+            if args[:2]==['gh','api']:return subprocess.CompletedProcess(args,0,json.dumps(record),'')
+            if args[:3]==['git','ls-remote','--tags']:return subprocess.CompletedProcess(args,0,commit+'\trefs/tags/'+record['tag_name']+'^{}\n','')
+            if args[:2]==['git','push']:
+                if fail_push:raise subprocess.CalledProcessError(1,args)
+                return subprocess.CompletedProcess(args,0,'','')
+            return original(args,root,capture,check)
+        return fake
+
+    def test_main_readme_has_every_version_and_only_real_download_links(self):
+        self.prepared()
+        readme=(self.root/'README.md').read_text()
+        self.assertIn('### All versions',readme);self.assertIn('| `0.3.1` |',readme);self.assertIn('| `0.3.0` |',readme)
+        self.assertNotIn('/releases/download/',readme)
+        catalog=release.release_catalog.load(self.root);catalog['versions']['0.3.0']['status']='published'
+        release.write_metadata(self.root,'0.3.1',4,(self.root/'CHANGELOG.md').read_text(),catalog=catalog)
+        readme=(self.root/'README.md').read_text()
+        self.assertIn('/releases/download/v0.3.0/NEXARC-0.3.0-macOS-arm64.dmg',readme)
+        self.assertNotIn('/releases/download/v0.3.1/',readme)
+
+    def test_published_prerelease_preserves_stable_latest(self):
+        self.prepared('beta');catalog=release.release_catalog.load(self.root)
+        catalog['versions']['0.3.0']['status']='published';catalog['versions']['0.3.1-beta.1']['status']='published'
+        release.write_metadata(self.root,'0.3.1-beta.1',4,(self.root/'CHANGELOG.md').read_text(),catalog=catalog)
+        readme=(self.root/'README.md').read_text()
+        self.assertIn('[Download NEXARC 0.3.0 for macOS]',readme)
+        self.assertIn('/NEXARC-0.3.1-beta.1-macOS-arm64.dmg',readme)
+        self.assertIn('| Prerelease |',readme)
+
+    def test_publication_updates_readme_only_after_dmg_and_tag_verified(self):
+        dest=self.package();manifest=json.loads((dest/'manifest.json').read_text());record=self.published_record(manifest)
+        pending=self.root/'.release/prepared.json'
+        with mock.patch.object(release,'run',side_effect=self.publication_runner(record,manifest['commit'])):
+            release.finish_publication(self.root,'0.3.1',manifest,pending)
+        self.assertFalse(pending.exists());self.assertEqual(self.git('status','--porcelain').strip(),'')
+        readme=(self.root/'README.md').read_text()
+        self.assertIn('NEXARC-0.3.1-macOS-arm64.dmg',readme);self.assertIn('| **Latest** |',readme)
+        changed=self.git('diff','--name-only','HEAD~1','HEAD').splitlines()
+        self.assertEqual(set(changed),{'README.md','docs/RELEASES.md','release-history.json'})
+        self.assertEqual(json.loads((dest/'manifest.json').read_text())['commit'],manifest['commit'])
+
+    def test_missing_published_dmg_never_creates_a_fake_download(self):
+        dest=self.package();manifest=json.loads((dest/'manifest.json').read_text());record=self.published_record(manifest)
+        record['assets']=[a for a in record['assets'] if not a['name'].endswith('.dmg')]
+        with mock.patch.object(release,'run',side_effect=self.publication_runner(record,manifest['commit'])):
+            with self.assertRaisesRegex(ValueError,'missing'):release.finish_publication(self.root,'0.3.1',manifest,self.root/'.release/prepared.json')
+        self.assertNotIn('/releases/download/',(self.root/'README.md').read_text())
+
+    def test_different_published_bytes_are_rejected(self):
+        dest=self.package();manifest=json.loads((dest/'manifest.json').read_text());record=self.published_record(manifest)
+        record['assets'][0]['digest']='sha256:wrong'
+        with mock.patch.object(release,'run',side_effect=self.publication_runner(record,manifest['commit'])):
+            with self.assertRaisesRegex(ValueError,'checksum differs'):release.finish_publication(self.root,'0.3.1',manifest,self.root/'.release/prepared.json')
+        self.assertNotIn('/releases/download/',(self.root/'README.md').read_text())
+
+    def test_failed_documentation_push_can_resume_without_bumping(self):
+        dest=self.package();manifest=json.loads((dest/'manifest.json').read_text());record=self.published_record(manifest);pending=self.root/'.release/prepared.json'
+        with mock.patch.object(release,'run',side_effect=self.publication_runner(record,manifest['commit'],fail_push=True)):
+            with self.assertRaises(subprocess.CalledProcessError):release.finish_publication(self.root,'0.3.1',manifest,pending)
+        self.assertTrue(pending.exists());first=self.git('rev-parse','HEAD')
+        self.assertEqual(json.loads(pending.read_text())['documentation_commit'],first.strip())
+        with mock.patch.object(release,'run',side_effect=self.publication_runner(record,manifest['commit'])):
+            release.finish_publication(self.root,'0.3.1',manifest,pending)
+        self.assertFalse(pending.exists());self.assertEqual(self.git('rev-parse','HEAD'),first)
 
 
 if __name__=='__main__':unittest.main()

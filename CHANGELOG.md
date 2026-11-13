@@ -2,7 +2,10 @@
 
 ## [Unreleased]
 
-_No changes recorded yet._
+- Reworked the main README with NEXARC branding, a feature gallery, installation steps and the complete version/download table.
+- Added a verified DMG installer for each release, while preserving app ZIP and source downloads.
+- Live DMG links and the Latest marker appear in the main README only after GitHub confirms publication.
+- Added repository avatar/social-preview assets and About description/topic instructions.
 
 ## [0.3.0] - 2026-11-13
 

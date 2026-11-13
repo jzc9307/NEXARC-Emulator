@@ -14,6 +14,19 @@
       "problemMatcher": []
     },
     {
+      "label": "NEXARC: Build DMG installer",
+      "type": "process",
+      "command": "python3",
+      "args": [
+        "scripts/release.py",
+        "dmg"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
       "label": "NEXARC: Test app models",
       "type": "process",
       "command": "bash",

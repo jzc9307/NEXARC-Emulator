@@ -8,7 +8,7 @@ When you ask the coding agent to **push to GitHub**, `AGENTS.md` instructs it to
 
 A normal VS Code Git **Push/Sync** only pushes commits. It does not run the release workflow or bump the version. Use the release tasks below, the documented commands, or the phrase “push to GitHub” with the agent. Bumping on every low-level Git push would also bump retries and documentation-only syncs; the explicit release workflow avoids that.
 
-`VERSION` is the single app release version; `BUILD_NUMBER` is the monotonically increasing macOS build number. `scripts/release.py` synchronizes the app plist, the app's displayed version, the README and [version history](RELEASES.md). The current `0.3.0` entry is a local baseline, not a claim that a GitHub release already exists.
+`VERSION` is the single app release version; `BUILD_NUMBER` is the monotonically increasing macOS build number. `scripts/release.py` synchronizes the app plist, the app's displayed version, the main README’s **All versions** DMG table and [version-history mirror](RELEASES.md). `release-history.json` records whether a version is local, prepared or actually published. The current `0.3.0` entry is a local baseline, not a claim that a GitHub release already exists.
 
 ## Connect a repository once
 
@@ -22,7 +22,7 @@ git remote add origin https://github.com/YOUR-ACCOUNT/NEXARC.git
 
 Install GitHub CLI from https://cli.github.com/ and sign in with `gh auth login`. Tokens belong in the system credential store, never in source files. VS Code's GitHub sign-in can push source commits; the release script additionally needs `gh` for release assets and Latest labeling.
 
-No remote URL, account login, public repository or GitHub Release has been created by the local setup.
+The local repository now has `https://github.com/jzc9307/NEXARC.git` as origin. No GitHub Release has been published by this setup. Sign-in credentials remain outside the repository.
 
 ## Prepare and publish a version
 
@@ -31,11 +31,11 @@ No remote URL, account login, public repository or GitHub Release has been creat
 3. Run `python3 scripts/release.py prepare`. Use `--bump minor` or `--bump major` when intended. Use `--prerelease alpha`, `beta` or `rc` for prereleases. `--notes-file path/to/notes.md` can supply exact multiline notes without shell escaping.
 4. Run `python3 scripts/release.py preflight`, the Python release tests, `bash scripts/test.sh`, and the checks appropriate to the actual product changes. Build with `bash scripts/build.sh` and verify the app. Do not replace the app during a live game; the build guard stops that replacement.
 5. Review the diff and commit the intended source/version files on `main`. Build caches, compiled engine output, private content and release staging stay ignored. The existing configured Git identity is used; this setup does not invent one.
-6. Run `python3 scripts/release.py package`. It requires a clean commit and matching versions in the built app and ZIP. It stages versioned app/source ZIPs, SHA256SUMS, release notes and a manifest in ignored `.release/current/`. Source packaging uses tracked files only.
+6. Run `python3 scripts/release.py package`. It requires a clean commit and matching versions in the built app and ZIP. It creates a verified, versioned **DMG installer** with NEXARC.app, an Applications shortcut and installation instructions; it also stages app/source ZIPs, SHA256SUMS, release notes and a manifest in ignored `.release/current/`. Source packaging uses tracked files only.
 7. Review `python3 scripts/release.py publish --dry-run` and finish the third-party distribution checks below.
-8. Run `python3 scripts/release.py publish`. It pushes the branch/tag atomically without force, uploads assets into a draft, then publishes it with the correct Latest/prerelease status. Add `--draft` to stop at a draft intentionally.
+8. Run `python3 scripts/release.py publish`. It pushes the branch/tag atomically without force, uploads assets into a draft, then publishes it with the correct Latest/prerelease status. After GitHub confirms publication, the script verifies the uploaded DMG/assets and remote tag, then commits and pushes only the README, version-table mirror and publication catalog. The main README gains the live DMG link and **Latest** marker; every earlier published version retains its own link. Local/prepared entries never pretend to be downloadable. Add `--draft` to stop at a draft intentionally.
 
-The script never stages or commits changes for you. It refuses to package a dirty tree, move an existing tag to different code, republish a published version, or start a second version while one is pending. If a network step fails, rerun the same pending version after checking GitHub. Do not bump again merely to retry an upload.
+The script never stages or commits product/source changes for you. Its post-publication step stages and commits only the three generated download-history documents. It refuses to package a dirty tree, move an existing tag to different code, republish a published version, or start a second version while one is pending. If the release succeeded but its history push failed, the pending record retains that documentation commit so rerunning finishes the same version without moving its tag. If a network step fails, rerun the same pending version after checking GitHub. Do not bump again merely to retry an upload.
 
 VS Code's Terminal → Run Task includes build/test, release-plan, prepare-patch, package and publish tasks. **Publish current release** contacts GitHub and is meant to be invoked only when the release is ready.
 
@@ -45,6 +45,15 @@ NEXARC is a frontend integrating upstream emulation code. Its project MIT licens
 
 Local `Vendor/CoreArchives` are ignored so downloaded core binaries do not enter source history accidentally. Fetching uses pinned checksums; a changed/expired upstream nightly is rejected, rather than silently using a different core. Fresh-clone dependency restoration has not been established merely by reusing this Mac's build cache. Arrange durable matching dependency downloads/source materials before advertising reproducible public binaries.
 
-Exclude personal ROMs, console keys, firmware, progress, session logs and downloaded covers. The preflight checks common paths/tokens and Git's 100 MiB regular-file limit, but a human/agent must still review the staged diff. The app ZIP belongs in Releases, not source history. Use bundled homebrew for portfolio screenshots and state compatibility and controller-testing limits accurately.
+Exclude personal ROMs, console keys, firmware, progress, session logs and downloaded covers. The preflight checks common paths/tokens and Git's 100 MiB regular-file limit, but a human/agent must still review the staged diff. The DMG and app ZIP belong in Releases, not source history. Use bundled homebrew for portfolio screenshots and state compatibility and controller-testing limits accurately.
 
 GitHub references: [release creation](https://cli.github.com/manual/gh_release_create), [release editing and Latest](https://cli.github.com/manual/gh_release_edit), [release management](https://docs.github.com/en/repositories/releasing-projects-on-github/managing-releases-in-a-repository).
+
+
+## Build a local DMG without publishing
+
+Run `python3 scripts/release.py dmg`, or choose **NEXARC: Build DMG installer** in VS Code's Run Task menu. The command checks the current app version/signature, creates a compressed read-only image and verifies its image checksum. In Jason's workspace the result is `../outputs/NEXARC-<version>-macOS-arm64.dmg`; a normal clone uses `dist/`. It neither bumps the app version nor contacts GitHub. It does not notarize the app.
+
+Keep historical installers in their original GitHub Releases; `.release/current` is disposable staging for the current release. The source root remains one project and the locally launchable app stays `NEXARC.app`.
+
+For the repository description, owner avatar, topic tags and link-preview artwork, see [GitHub appearance](GITHUB-APPEARANCE.md). These are separate from README content.

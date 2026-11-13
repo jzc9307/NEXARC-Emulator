@@ -1,90 +1,219 @@
-# NEXARC
+<div align="center">
+
+<img src="docs/assets/readme-banner.svg" alt="NEXARC — every era, one library" width="1200" />
+
+<h1>NEXARC</h1>
+
+<p><strong>Your collection. Your console. Your way to play.</strong><br />
+A native macOS multi-console emulation frontend with a local game library,<br />
+handheld skins, visual save slots and controller support.</p>
+
+<img src="docs/assets/tech-badges.svg" alt="macOS 14+ · Apple Silicon · SwiftUI · 21 console collections · Experimental" width="1000" />
+
+<p>
+<a href="#download--install">Download for Mac</a> ·
+<a href="#all-versions">All versions</a> ·
+<a href="#app-gallery">App gallery</a> ·
+<a href="#your-library-your-progress">Features</a> ·
+<a href="docs/USER-GUIDE.md">Player guide</a> ·
+<a href="#build--study">Build from source</a>
+</p>
+
+<sub>Independent study and portfolio project. Emulation is powered by credited upstream engines.</sub>
+
+</div>
+
+---
+
+> Import your games, choose a console and pick up where you left off.
+>
+> NEXARC provides the macOS interface, library, skins, progress tools and engine integration. Title compatibility varies; 21 collections does not mean every game works. This is an experimental build with known runtime limitations. No commercial ROMs, console keys or firmware are included.
+
+## Download & install
 
 <!-- nexarc:version -->
-**Newest version: `0.3.0`** · [Version history](docs/RELEASES.md) · [Release guide](docs/GITHUB.md)
+**Newest version: `0.3.0`**
+
+**The first public DMG has not been published yet.** The local installer is ready to build; public downloads will appear here once a release is published.
+
+### All versions
+
+| Version | Date | Status | macOS installer | Release notes |
+|---|---|---|---|---|
+| `0.3.0` | 2026-11-13 | **Newest** · Local build | Not published | [Changes](CHANGELOG.md#030---2026-11-13) |
+
+Every published version keeps its own DMG, source archive, checksums, and release notes. Older downloads remain available under [GitHub Releases](https://github.com/jzc9307/NEXARC/releases). Local or prepared versions are listed without a live download link until publication succeeds.
 <!-- /nexarc:version -->
 
-Native SwiftUI for Apple Silicon Macs, macOS 14 or later. Extract `NEXARC-macOS.zip` and open NEXARC. The app is signed locally, not notarized with an Apple Developer account.
+**You do not need VS Code, Xcode or .NET to run a packaged release.** Download its DMG, then:
 
-## Play
+1. Open `NEXARC-X.Y.Z-macOS-arm64.dmg`.
+2. Drag **NEXARC.app** into **Applications** using the shortcut in the disk image.
+3. Eject the disk image and open NEXARC from Applications.
+4. Select a console and import your own compatible game files.
 
-Choose a console in **Consoles**, then a game. **Import** and drag-and-drop accept your local game files. Common extensions identify the system; ambiguous disc formats ask which console to use. Extract downloaded archives first. Retro games are copied into managed local folders. Switch files remain at their imported location.
+| Requirement | Details |
+|---|---|
+| Mac | Apple Silicon; macOS 14 or later |
+| Download | Each published version has its own DMG; ZIP and source archives are also provided |
+| Updates | Quit the running game and NEXARC before replacing the app; the library remains in Application Support |
+| Signing | Locally signed, currently **not notarized** by Apple |
 
-Included test programs:
+macOS may block an unnotarized app on first launch. Only if you trust the download, follow **System Settings → Privacy & Security** to allow it. Do not disable Gatekeeper globally. Older builds may contain known bugs; use the latest compatible release and export saves before changing core versions.
 
-- **Orbit Catch / Game Boy** — an original catch-the-star game. Left/right moves; best score uses battery-backed save RAM.
-- **Color Signal / NES** — an original graphics and input test. Arrow keys move the sprite.
-- **2048 / 3DS** — 0rientd's MIT-licensed homebrew port, included with source and license.
-- **Orbit Pong / Switch** — original playable homebrew. Up/down, Z to serve, X to reset, + to exit.
-- **First Light / Switch** — a CPU diagnostic, with results in Sessions; it has no graphics.
+## At a glance
 
-## Display, controls and artwork
+| Your collection | Your screen | Your progress |
+|---|---|---|
+| 21 console collections | Hardware artwork for supported handhelds | Six visual save slots on supported retro cores |
+| Imports and cached cover art | Custom image uploads and screen placement | Automatic resume on normal exit where supported |
+| Search, favorites and recently played | Independent DS/3DS top and touch layouts | Rolling recovery copies before replacement/load |
+| Keyboard and controller integration | Per-console and per-game preferences | Local saves, checksums and backup export |
 
-**Settings → Console display & skins** saves a separate profile for each console. Supported handhelds offer hardware-faithful community artwork (DS, 3DS, GB, GBC, GBA, PSP and Game Gear), plus Screen only and NEXARC's optional stylized shells. Home consoles default to Screen only. Uploaded PNG/JPEG/WebP/TIFF artwork is stored locally per console. Select Uploaded skin, then drag the highlighted game viewport or its corner handle to fit your image. For DS/3DS, enable **Place screens separately** and position Top and Touch independently; the lower screen's mouse input follows its placement. This mode uses stacked software output. Import image artwork rather than proprietary skin ZIP formats. See the bundled artwork credits and license under Resources/Skins/Hardware.
+## Contents
 
-The Window size menu offers **Small (800 × 600)**, **Standard (1100 × 760)**, **Large (1440 × 900)**, **Fit to display** and **Custom size**. Custom dimensions appear only when selected. Fit to display adapts to the available screen on each launch. These choices are also available in a game’s display override.
+- [Download & install](#download--install)
+- [All versions](#all-versions)
+- [App gallery](#app-gallery)
+- [Your library, your progress](#your-library-your-progress)
+- [Handheld skins & screen layouts](#handheld-skins--screen-layouts)
+- [Controls & fast-forward](#controls--fast-forward)
+- [Consoles & compatibility](#consoles--compatibility)
+- [Local data & privacy](#local-data--privacy)
+- [Build & study](#build--study)
+- [Documentation & credits](#documentation--credits)
 
-**Game details → Per-game settings** optionally overrides display/skin, keyboard, controller buttons and fast-forward speed. Turning a section off restores console defaults. Retro gamepad mapping targets the standard gamepad buttons for player one; analog sticks keep their normal mapping. Switch can snapshot the selected controller profiles separately. Changes apply on the next launch. During retro gameplay, Esc opens the custom session menu, where Console skin cycles the available choices.
+## App gallery
 
-Enable **System → Discord Rich Presence** and paste the Application ID from an app you create in the [Discord Developer Portal](https://discord.com/developers/applications). Keep the Discord desktop app running. NEXARC then shows the current game and console while the session is open; closing the session clears the activity. Presence uses Discord's local IPC connection.
+Screenshots below are from the running NEXARC app using a separate demo library and the bundled homebrew programs. The banner is original NEXARC artwork, not a game screenshot. No user's commercial-game library or private saves are shown.
 
-**Controllers** defaults to an illustrated keyboard when no physical controller is connected. Highlighted keys reflect your saved bindings. Remap retro-console actions using the pickers; changes apply next launch. Connect a supported controller to see its model and live inputs, or choose Preview controller models. Switch’s keyboard profile remains in Core tools → Input.
+[![NEXARC library showing bundled homebrew programs and compact game cards](docs/screenshots/library.png)](docs/screenshots/library.png)
 
-Imported games first check for a same-name local PNG/JPG cover. Missing covers are matched by system and exact normalized title against [Libretro thumbnails](https://github.com/libretro-thumbnails/libretro-thumbnails), with region preference. Covers are cached offline. No game data or ROM hash is uploaded; requests contain the public system and filename/title. Switch/homebrew or unmatched titles retain designed fallback art; choose your own cover in Game tools. All box art stays fully visible rather than being cropped to the card.
+<table>
+<tr>
+<td width="50%" valign="top">
+<a href="docs/screenshots/consoles.png"><img src="docs/screenshots/consoles.png" alt="NEXARC console collection gallery" /></a>
+<p><strong>Explore your consoles</strong><br />Open a collection and see the games you imported for that system.</p>
+</td>
+<td width="50%" valign="top">
+<a href="docs/screenshots/display-settings.png"><img src="docs/screenshots/display-settings.png" alt="NEXARC settings with console skins and window-size presets" /></a>
+<p><strong>Make it your setup</strong><br />Choose handheld artwork, screen layouts and a window-size preset.</p>
+</td>
+</tr>
+</table>
 
-During play, the library shows a highlighted active card, elapsed session time and a persistent Now Playing panel. Other games dim and cannot start until the session ends. Return to game focuses the owned game window. Session menu opens the same Escape controls.
+## Your library, your progress
 
-Hold **Tab** for the selected fast-forward target (**2× / 3× / 4× / 5×**); release for normal speed. **Shift + Tab** uses 5× immediately. Choose the target in System → Playback preferences or the Now Playing panel. The retro player shows an overlay while accelerated; Switch uses guest-clock turbo and reports speed in its title and Now Playing panel. Targets depend on game and hardware performance. Menus, key release and loss of focus restore normal speed. The native cursor stays visible in fullscreen; automatic mouse grabbing is disabled.
+Import a local file or drop it into the library. Recognized extensions identify the console; ambiguous disc formats ask you to choose. Retro imports become managed local copies; large Switch files stay at their imported path. Games are not downloaded by NEXARC.
 
-## Systems and engines
+Cover art checks a same-name local image first, then an optional exact-title match from Libretro's thumbnail collections. Unmatched games keep designed fallback artwork, and you can choose a cover yourself. During play, the active card shows the session timer; other games wait until that session ends.
 
-The library has 21 collections: Switch, 3DS, DS, Game Boy, Game Boy Color, Game Boy Advance, NES, SNES, N64, GameCube, Wii, Mega Drive, Master System, Game Gear, Dreamcast, Saturn, PlayStation, PlayStation 2, PSP, PC Engine and Atari 2600.
+| Action | Where to find it | Behavior |
+|---|---|---|
+| Save a snapshot | Game details → Save slots; session menu; F5 | Writes the selected slot and stores a screenshot when the core provides one |
+| Load progress | Resume, a visual slot, or F8 | Protects current play before a live slot load; checks core compatibility and file integrity |
+| Recover an earlier snapshot | Game details → Recovery backups | Keeps up to ten recovery copies; restore while the game is stopped |
+| Resolve display trouble | Now Playing → Recovery | Refresh the display, restart from an in-game save, or export diagnostics |
+| Leave a session | Esc → Save & return / Return to library | Uses the supported save workflow and graceful core exit |
+| Export a backup | Game details → Your progress | Exports save data, slots and recovery copies separately from ROMs |
 
-Switch retains the source-built Ryujinx-derived core from 0.1. Other systems use the official RetroArch 1.22.2 runtime and 16 Apple Silicon libretro cores. This follows the modular approach used by OpenEmu and RetroArch. Each system is a configured engine route, not a claim that every game runs. PS2's Play! core is experimental. 3DS uses software graphics by default because Vulkan failed in testing on this Mac; performance in demanding games will vary. The included Switch homebrew test worked, including input and speed controls, but the Switch Vulkan renderer crashed intermittently during sustained presentation on macOS 27 in testing. Treat Switch play as experimental and save often until this renderer issue is fixed.
+In-game saves and emulator snapshots are different. **Switch uses in-game saves and has no snapshot slots.** Snapshot formats depend on the core build; keep in-game saves for long-term progress. Restarting can lose unsaved play. A display refresh cannot resolve every possible game/core fault.
 
-Gameplay opens in a separate engine window. NEXARC provides the gallery, native library, imports, original interactive console models, per-game folders, save management, patching and engine control. It does not contain commercial game downloads or Nintendo console keys.
+```mermaid
+flowchart LR
+    A[Your local game] --> B[NEXARC collection]
+    B --> C[Console defaults or game override]
+    C --> D[Owned engine process]
+    D --> E[Game window and session controls]
+    E --> F[In-game saves and supported snapshots]
+    F --> G[Recovery history and next-session resume]
+```
 
-## Progress and tools
+## Handheld skins & screen layouts
 
-For retro consoles, in-game save RAM is flushed periodically and on normal exit. An automatic resume state is created on normal exit when the core supports it. Use **Resume** for that snapshot. **Game details → Save slots** provides six visual slots with thumbnail and timestamp. **F5** saves the slot selected in the session menu (Slot 1 initially); **F8** loads it. Before a load, NEXARC captures current play into recovery history. Overwritten slots and previous resume files are also preserved, up to ten recovery copies per game. **Recovery backups → Restore** restores a selected snapshot while the game is stopped. Snapshots carry core-build fingerprints and checksums; incompatible or damaged files are rejected. In-game saves remain preferable for long-term progress.
+Go to **Settings → Console display & skins**, choose the console at the top, then select an available skin. Community hardware artwork is included for **DS, 3DS, Game Boy, Game Boy Color, GBA, PSP and Game Gear**. Home consoles default to a screen-only view. Classic/Neon are optional NEXARC stylizations, separate from hardware artwork.
 
-**Escape** opens NEXARC's custom paused session menu. Escape again or a click outside resumes. Save & return waits for the selected slot to finish before quitting; Return to library uses the core's normal auto-save on exit. DS/3DS software frames are presented through NEXARC directly to avoid a stale Metal drawable after loading. Retro audio writes are nonblocking so an interrupted audio route does not indefinitely stop emulation.
+Upload PNG, JPEG, WebP or TIFF images and place the screen inside the artwork by dragging its rectangle and resize handle. DS/3DS can place the **Top** and **Touch** screens independently; lower-screen mouse input follows its configured area. Fine adjustment exposes exact percentages. Emulator-specific ZIP/skin packages must first be exported as an image.
 
-**Recovery** in Now Playing provides display refresh, restart from in-game save (skipping the resume snapshot), frame/heartbeat diagnostics and a text report export with home paths redacted. Refresh keeps the running game; restart can lose unsaved play. These controls do not assume that every dark game scene is a failure. Switch exposes restart and diagnostics but does not support retro display-refresh or snapshot slots.
+**Window presets:** Small · Standard · Large · Fit to display · Custom. You only type dimensions when choosing Custom. A game's display override can keep a different skin, layout or window preset from the console default. Settings apply on the next launch; the retro session menu can cycle available skins during play.
 
-A connected extended gamepad navigates the library: D-pad/left stick selects, A/Cross plays, X/Square opens details, B/Circle goes back and shoulders change sections. In game details, left/right selects a slot, A/Cross loads it and X/Square plays. In the paused game menu, D-pad selects actions, A activates, B resumes and left/right changes slots. Press both stick buttons to open the menu. Physical-controller behavior still requires hardware validation.
+Community artwork retains its original credits and license. It is not official manufacturer artwork. See the [player guide](docs/USER-GUIDE.md) for limits and supported upload sizes.
 
-Open a game's **…** menu for cover artwork, its save folder, ZIP backup export, IPS/BPS patching, and compatible RetroArch cheat files. BPS verifies source, target and patch checksums. A patch creates a separate library entry and preserves the original. Already patched ROMs can be imported normally. Cheat codes depend on the game, revision, region and core; they are not supported by every engine. 3DS, Dolphin, PS2 and Switch do not use this build's `.cht` workflow.
+## Controls & fast-forward
 
-Switch uses its games' normal saves and existing core tools, with no quick states. Switch save-folder export contains all Switch user saves because title-ID extraction is not implemented.
+| Input | Action |
+|---|---|
+| Arrow keys | Default direction controls |
+| X / Z / S / A | Default A / B / X / Y actions; mappings can be changed |
+| Esc | Open the custom paused menu; Esc or an outside click resumes |
+| F5 / F8 | Save / load the session menu's selected slot on supported cores |
+| Hold Tab | Selected fast-forward target: **2×, 3×, 4× or 5×** |
+| Hold Shift + Tab | Target 5×; release for normal speed |
+| Gamepad D-pad / left stick | Navigate library items; A/Cross plays and X/Square opens details |
 
-**Saves** is the progress library. Data stays in `~/Library/Application Support/NEXARC`. On first launch, NEXARC moves an existing `~/Library/Application Support/Helio` data folder into the new location, preserving games, favorites, covers, controller profiles and saves.
+The Controllers page shows a keyboard when no gamepad is detected. Gamepad navigation, remapping and family previews are implemented; **physical-controller validation remains pending**. Per-game overrides cover keyboard, logical gamepad layout and speed; Switch can snapshot its controller profiles. Fast-forward targets depend on the core, title and hardware; they are not guaranteed performance multipliers.
 
-Controller detection is on demand: open Controllers and press **Detect devices** to enumerate SDL devices. Merely opening the page or connecting a controller no longer starts the Switch helper. Live native model previews remain. The native profile editor configures Switch. Retro consoles use macOS GameController/MFi mapping; F1 → Controls provides per-core remapping. Physical-controller validation is still pending.
+Optional Discord Rich Presence shows the running game and console through Discord's local IPC connection after you supply your own Discord application ID. See [setup](docs/USER-GUIDE.md).
 
-## Build and study
+## Consoles & compatibility
 
-Read `docs/START-HERE.md` and `docs/VERIFICATION.md`. The source is deliberately separated into metadata, UI, import rules, byte-level patches and process control.
+| Collections | Current evidence / limits |
+|---|---|
+| Game Boy, NES | Bundled homebrew rendered and passed save/load/resume checks |
+| DS | Focused local-title tests covered resume, save/load, layouts and display recovery; title compatibility still varies |
+| 3DS | Bundled 2048 homebrew passed rendering and save/load checks; software graphics default |
+| Switch | Source-built Ryujinx-derived engine retained; homebrew checked; sustained Vulkan presentation has shown intermittent crashes |
+| GBC, GBA, SNES, N64, GameCube, Wii | Engine routes are bundled; broad title-level validation is incomplete |
+| Mega Drive, Master System, Game Gear, Dreamcast, Saturn | Engine routes are bundled; broad title-level validation is incomplete |
+| PlayStation, PSP, PC Engine, Atari 2600 | Engine routes are bundled; broad title-level validation is incomplete |
+| PlayStation 2 | Experimental Play! route; no broad compatibility claim |
 
-1. Restore the retro runtime with `bash scripts/fetch-retro.sh`.
-2. Build the Switch engine with `bash scripts/build-core.sh` (requires .NET 10).
-3. Build/package the native app with `bash scripts/build.sh` (requires Xcode command line tools).
-4. `python3 scripts/build-retro-homebrew.py` rebuilds the Game Boy and NES ROMs without a console SDK.
+Retro systems use RetroArch/libretro cores; Switch uses the retained Ryujinx-derived engine. NEXARC integrates these engines and does not claim their CPU/GPU implementations as original work. Required BIOS/firmware/keys are not supplied. Read the [verification record](docs/VERIFICATION.md) for exactly what was tested.
 
-The source-built Switch engine and frontend are included. Added retro engines are upstream binaries; their exact core ZIP snapshots are retained in Vendor/CoreArchives for reproducible restoration. Download hashes, authors and licenses are recorded under Resources/Notices. Their source references are documented in THIRD-PARTY.md. See individual licenses for redistribution terms; they are not all MIT.
+Included programs: **Orbit Catch** (Game Boy), **Color Signal** (NES), **2048** by 0rientd (3DS), **Orbit Pong** (Switch), and **First Light** (Switch CPU diagnostic with no graphics).
 
-## Reading the new code
+## Local data & privacy
 
-Start with `Sources/Models.swift` and `PlayerPreferences.swift` for stored data. `AppModel.swift` owns the library; `EngineBridge.swift` owns the exact process it launches; `RetroRuntime.swift` translates display and keyboard choices into real core settings. `PlayerCompanion.m` is a small in-process AppKit companion: its common-mode timer wakes the upstream Cocoa frame observer, its local event monitor reserves Escape, and its window wrapper fits the original render view inside a skin. It never runs guest instructions itself. `CoverService.swift` handles exact-title artwork lookup and offline caching. `Theme.swift` contains the approved Warp emblem and compact button styles.
+The library, settings and saves live in `~/Library/Application Support/NEXARC`. Normal app updates do not relocate that folder. Earlier Helio-managed data is migrated when applicable. Runtime QA uses isolated copies rather than resetting a player's library.
 
-The app identity and data directory use NEXARC. The first launch migrates the older Helio data directory as a whole; it does not delete existing games or saves. Fast-forward uses **hold Tab** for the selected 2×–5× speed, or **hold Shift + Tab** for 5×. The active multiplier appears in the player window and session controls.
+Game imports stay local. Cover matching can request public system/title filenames from Libretro thumbnails; it does not upload the ROM or a ROM hash. Discord activity is optional. NEXARC includes no cloud-save service or game download catalog.
 
-## Console skins and uploads
+## Build & study
 
-Settings → Console display & skins lists all 21 consoles. Each console has its own saved skin choice and upload collection. Hardware artwork is included for DS, 3DS, Game Boy, Game Boy Color, GBA, PSP and Game Gear. Select Console hardware for these community reproductions of the actual console shells. Unconfigured supported handhelds default to hardware artwork; home consoles default to Screen only. Existing choices are preserved. Classic and Neon remain optional studio frames.
+To **play a release**, use the DMG above. To study or modify the source:
 
-Use Upload skin image to import PNG, JPEG, WebP, or TIFF artwork (up to 32 MB and 8192 × 8192 pixels). NEXARC keeps a PNG copy in its managed Skins folder. Choose an uploaded image, then drag or resize the highlighted preview area. Fine adjustment exposes Left, Top, Width and Height. DS/3DS support either one combined viewport or independent Top and Touch rectangles via Place screens separately. Switch uses transparent PNG overlays stretched to the game window and keeps the original full-window game viewport.
+```sh
+bash scripts/fetch-retro.sh
+bash scripts/build-core.sh
+bash scripts/test.sh
+python3 -m unittest discover -s Tests -p 'test_release.py'
+bash scripts/build.sh
+```
 
-ZIP, .deltaskin, .gbaskin, SVG, and other emulator-specific skin packages are not parsed. Export their artwork as a supported image before importing; controls and layout metadata from those packages are not imported. Changes in Settings apply next launch. Esc → Console skin cycles built-in and selected uploaded artwork during retro play and saves the selection. Removing a skin deletes only NEXARC’s managed copy.
+Native builds require Apple's command-line tools and an Apple Silicon Mac. Building the Switch engine also needs the .NET 10 SDK. The scripts reuse the outer workspace cache locally; a fresh clone uses ignored `work/` and `dist/` folders. Upstream binary snapshots are checksum-pinned; fresh-clone dependency availability still needs verification. No claim of a fully offline reproducible build is made.
 
-Hardware artwork is by [Duimon](https://github.com/Duimon/Retroarch-Overlays), distributed unchanged under CC BY-NC-ND 4.0. Original files, source URLs, hashes, credits and license are included in Resources/Skins/Hardware. This is community hardware artwork, not official console-manufacturer artwork. DS and 3DS hardware presets use Stacked layout.
+```text
+Sources/                  SwiftUI/AppKit frontend and engine bridge
+EngineSource/             Credited Switch engine source
+Resources/                Homebrew, artwork, metadata and notices
+Tests/                    App logic, file integrity and release regressions
+scripts/                  Build, DMG creation and versioned GitHub publishing
+VERSION / BUILD_NUMBER    Current app version and macOS build number
+release-history.json      Publication state used by the README download table
+CHANGELOG.md              Changes for every recorded version
+docs/                     Player guide, verification and release instructions
+```
+
+## Documentation & credits
+
+| Document | Purpose |
+|---|---|
+| [Player guide](docs/USER-GUIDE.md) | Imports, layouts, controls, progress and per-console limitations |
+| [Study guide](docs/START-HERE.md) | Code ownership, architecture and learning path |
+| [Verification](docs/VERIFICATION.md) | Test evidence and known runtime issues |
+| [GitHub release guide](docs/GITHUB.md) | Version bumps, DMGs, history and publication |
+| [Repository appearance](docs/GITHUB-APPEARANCE.md) | GitHub description, topics, avatar and social preview |
+| [Changelog](CHANGELOG.md) | What changed in each version |
+| [Third-party credits](THIRD-PARTY.md) | Engine, homebrew, model and artwork attribution |
+
+NEXARC project code uses the [MIT license](LICENSE). Upstream engines, dependencies and artwork retain their separate licenses, including GPL and noncommercial terms. Public binary distribution requires matching source/notices and asset-license review; credit alone is not a completed compliance review. Product names and trademarks belong to their owners; this independent project is not endorsed by console manufacturers.
