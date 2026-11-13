@@ -86,6 +86,15 @@ class ReleaseTests(unittest.TestCase):
             self.assertFalse(any('private.keys' in name or '/.git/' in name or '/dist/' in name for name in names))
         self.assertTrue((dest/'SHA256SUMS.txt').is_file())
 
+    def test_source_archive_matches_git_objects_despite_checkout_line_endings(self):
+        self.package();(self.root/'.gitattributes').write_text('*.md text eol=lf\n');self.commit()
+        readme=self.root/'README.md';readme.write_bytes(readme.read_bytes().replace(b'\n',b'\r\n'))
+        self.assertEqual(self.git('status','--porcelain').strip(),'')
+        dest=release.package(self.root)
+        with zipfile.ZipFile(dest/'NEXARC-0.3.1-source.zip') as archive:
+            expected=subprocess.check_output(['git','show','HEAD:README.md'],cwd=self.root)
+            self.assertEqual(archive.read('NEXARC/README.md'),expected)
+
     def test_package_rejects_dirty_source_and_stale_binary(self):
         self.package();(self.root/'README.md').write_text((self.root/'README.md').read_text()+'\nUncommitted change\n')
         with self.assertRaisesRegex(ValueError,'Commit the reviewed'):release.package(self.root)

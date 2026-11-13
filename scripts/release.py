@@ -223,10 +223,8 @@ def package(root=ROOT):
         if path.is_file():path.unlink()
     app_zip=dest/f'NEXARC-{version}-macOS-arm64.zip';shutil.copy2(binary,app_zip)
     source_zip=dest/f'NEXARC-{version}-source.zip'
-    with zipfile.ZipFile(source_zip,'w',zipfile.ZIP_DEFLATED,compresslevel=6) as archive:
-        for name in files(root,tracked=True):
-            path=root/name
-            if path.is_file():archive.write(path,'NEXARC/'+name)
+    # Archive Git objects, not checkout bytes (which may have CRLF/smudge conversions).
+    run(['git','archive','--format=zip','--prefix=NEXARC/','-o',str(source_zip),'HEAD'],root)
     atomic(dest/'NOTES.md',notes_for((root/'CHANGELOG.md').read_text(),version)+'\n')
     assets=[app_zip,source_zip]
     sums=''.join(f'{sha(path)}  {path.name}\n' for path in assets)
