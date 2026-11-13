@@ -1,0 +1,1 @@
+Hardware artwork by Duimon, from https://github.com/Duimon/Retroarch-Overlays . Licensed CC BY-NC-ND 4.0. Original PNG files are distributed unmodified; NEXARC supplies screen-placement metadata separately. These are community reproductions of the original hardware, not official Nintendo, Sony or SEGA assets. Source URLs and SHA256 hashes are in SOURCES.json.

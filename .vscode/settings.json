@@ -1,0 +1,15 @@
+{
+  "files.exclude": {
+    "**/bin": true,
+    "**/obj": true,
+    "**/__pycache__": true,
+    ".release": true
+  },
+  "search.exclude": {
+    "EngineSource/**/bin/**": true,
+    "EngineSource/**/obj/**": true,
+    "work/**": true,
+    "dist/**": true
+  },
+  "files.trimTrailingWhitespace": true
+}

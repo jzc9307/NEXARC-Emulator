@@ -1,0 +1,98 @@
+[
+  {
+    "core": "azahar",
+    "library": "Azahar",
+    "license": "GPLv2+",
+    "authors": "Azahar Emulator"
+  },
+  {
+    "core": "dolphin",
+    "library": "dolphin-emu",
+    "license": "GPLv2+",
+    "authors": "Team Dolphin"
+  },
+  {
+    "core": "fceumm",
+    "library": "FCEUmm",
+    "license": "GPLv2",
+    "authors": "FCEU Team|CaH4e3"
+  },
+  {
+    "core": "flycast",
+    "library": "Flycast",
+    "license": "GPLv2",
+    "authors": "flyinghead"
+  },
+  {
+    "core": "gambatte",
+    "library": "Gambatte",
+    "license": "GPLv2",
+    "authors": "Sinamas"
+  },
+  {
+    "core": "genesis_plus_gx",
+    "library": "Genesis Plus GX",
+    "license": "Non-commercial",
+    "authors": "Charles McDonald|Eke-Eke"
+  },
+  {
+    "core": "mednafen_pce_fast",
+    "library": "Beetle PCE Fast",
+    "license": "GPLv2",
+    "authors": "Mednafen Team"
+  },
+  {
+    "core": "mednafen_saturn",
+    "library": "Beetle Saturn",
+    "license": "GPLv2",
+    "authors": "Mednafen Team"
+  },
+  {
+    "core": "melondsds",
+    "library": "melonDS DS",
+    "license": "GPLv3+",
+    "authors": "Jesse Talavera|The melonDS Team"
+  },
+  {
+    "core": "mgba",
+    "library": "mGBA",
+    "license": "MPLv2.0",
+    "authors": "endrift"
+  },
+  {
+    "core": "parallel_n64",
+    "library": "ParaLLEl N64",
+    "license": "GPLv2",
+    "authors": "Hacktarux|Mupen64Plus Team|TinyTiger|Libretro"
+  },
+  {
+    "core": "pcsx_rearmed",
+    "library": "PCSX-ReARMed",
+    "license": "GPLv2",
+    "authors": "PCSX Team|notaz|Exophase"
+  },
+  {
+    "core": "play",
+    "library": "Play!",
+    "license": "MIT",
+    "authors": "Jean-Philip Desjardins"
+  },
+  {
+    "core": "ppsspp",
+    "library": "PPSSPP",
+    "license": "GPLv2",
+    "authors": "Henrik Hrydgard"
+  },
+  {
+    "core": "snes9x",
+    "library": "Snes9x",
+    "license": "Non-commercial",
+    "authors": "Snes9x Team"
+  },
+  {
+    "core": "stella",
+    "library": "Stella",
+    "license": "GPLv2",
+    "authors": "Stephen Anthony|Bradford Mott|Eckhard Stolberg|Brian Watson"
+  }
+]

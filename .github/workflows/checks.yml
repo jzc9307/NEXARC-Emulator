@@ -1,0 +1,21 @@
+name: Source checks
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  checks:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - name: Verify app version
+        run: python3 scripts/release.py check
+      - name: Test versioning and release packaging
+        run: python3 -m unittest discover -s Tests -p 'test_release.py'
+      - name: Test app models and runtime helpers
+        run: bash scripts/test.sh

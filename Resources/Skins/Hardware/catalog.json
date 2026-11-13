@@ -1,0 +1,86 @@
+{
+  "nds": {
+    "id": "hardware-nds",
+    "name": "Nintendo DS \u00b7 Red",
+    "file": "nds.png",
+    "imageAspect": 1.7777777777777777,
+    "screen": {
+      "x": 0.33671875,
+      "y": 0.06527777777777778,
+      "width": 0.3265625,
+      "height": 0.8694444444444445
+    }
+  },
+  "n3ds": {
+    "id": "hardware-n3ds",
+    "name": "Nintendo 3DS \u00b7 Red",
+    "file": "n3ds.png",
+    "imageAspect": 1.7777777777777777,
+    "screen": {
+      "x": 0.2950520833333333,
+      "y": 0.06805555555555555,
+      "width": 0.40989583333333335,
+      "height": 0.8740740740740741
+    }
+  },
+  "gb": {
+    "id": "hardware-gb",
+    "name": "Game Boy",
+    "file": "gb.png",
+    "imageAspect": 1.7777777777777777,
+    "screen": {
+      "x": 0.32005208333333335,
+      "y": 0.12638888888888888,
+      "width": 0.35989583333333336,
+      "height": 0.575
+    }
+  },
+  "gbc": {
+    "id": "hardware-gbc",
+    "name": "Game Boy Color",
+    "file": "gbc.png",
+    "imageAspect": 1.7777777777777777,
+    "screen": {
+      "x": 0.3184895833333333,
+      "y": 0.08148148148148149,
+      "width": 0.36302083333333335,
+      "height": 0.5810185185185185
+    }
+  },
+  "gba": {
+    "id": "hardware-gba",
+    "name": "Game Boy Advance",
+    "file": "gba.png",
+    "imageAspect": 1.7777777777777777,
+    "screen": {
+      "x": 0.2596354166666667,
+      "y": 0.21666666666666667,
+      "width": 0.48072916666666665,
+      "height": 0.5666666666666667
+    }
+  },
+  "psp": {
+    "id": "hardware-psp",
+    "name": "Sony PSP",
+    "file": "psp.png",
+    "imageAspect": 1.7777777777777777,
+    "screen": {
+      "x": 0.15625,
+      "y": 0.12175925925925926,
+      "width": 0.6875,
+      "height": 0.6842592592592592
+    }
+  },
+  "gameGear": {
+    "id": "hardware-gameGear",
+    "name": "SEGA Game Gear",
+    "file": "gameGear.png",
+    "imageAspect": 1.7777777777777777,
+    "screen": {
+      "x": 0.284375,
+      "y": 0.17037037037037037,
+      "width": 0.43125,
+      "height": 0.5731481481481482
+    }
+  }
+}

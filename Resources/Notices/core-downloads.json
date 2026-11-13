@@ -1,0 +1,82 @@
+[
+  {
+    "core": "gambatte",
+    "url": "https://buildbot.libretro.com/nightly/apple/osx/arm64/latest/gambatte_libretro.dylib.zip",
+    "sha256": "53ca648b75ebf43e51a11b498ac7290627a5d2a50f3199a144894850cc52f165"
+  },
+  {
+    "core": "mgba",
+    "url": "https://buildbot.libretro.com/nightly/apple/osx/arm64/latest/mgba_libretro.dylib.zip",
+    "sha256": "0b09bedcb796500243df6a3e67e869f7ca0825b2ac324e70024e858e3cd078f7"
+  },
+  {
+    "core": "fceumm",
+    "url": "https://buildbot.libretro.com/nightly/apple/osx/arm64/latest/fceumm_libretro.dylib.zip",
+    "sha256": "84e1db24261cd022d1af585f463dfa3739bcb3e701bdc8fd75b2973450353f35"
+  },
+  {
+    "core": "snes9x",
+    "url": "https://buildbot.libretro.com/nightly/apple/osx/arm64/latest/snes9x_libretro.dylib.zip",
+    "sha256": "027f6f382e80f14b99fd46cb91954590906c2abd35bb6897f1f432638c9f4435"
+  },
+  {
+    "core": "parallel_n64",
+    "url": "https://buildbot.libretro.com/nightly/apple/osx/arm64/latest/parallel_n64_libretro.dylib.zip",
+    "sha256": "2fec2e19fa9fb901daa1bdb3360666d1aebb84f729ed7933c134b8fc12361028"
+  },
+  {
+    "core": "melondsds",
+    "url": "https://buildbot.libretro.com/nightly/apple/osx/arm64/latest/melondsds_libretro.dylib.zip",
+    "sha256": "f7803436d3bff64f361dd31434a139f2feab691352f535bb982eaeb69aef6cf9"
+  },
+  {
+    "core": "azahar",
+    "url": "https://buildbot.libretro.com/nightly/apple/osx/arm64/latest/azahar_libretro.dylib.zip",
+    "sha256": "6aaaadebe2f082cc7b55afe238ff524a7dfdffb43d247c56a954099405ba0728"
+  },
+  {
+    "core": "dolphin",
+    "url": "https://buildbot.libretro.com/nightly/apple/osx/arm64/latest/dolphin_libretro.dylib.zip",
+    "sha256": "7b2857f66ef5575afd4fcfaab340c2b79994371a4d41c9eccb6d10ea715eae1a"
+  },
+  {
+    "core": "genesis_plus_gx",
+    "url": "https://buildbot.libretro.com/nightly/apple/osx/arm64/latest/genesis_plus_gx_libretro.dylib.zip",
+    "sha256": "384f7cfd3fc145a4d030e30969cd33058b6bf6561cd9e304121290f2eb9abcac"
+  },
+  {
+    "core": "flycast",
+    "url": "https://buildbot.libretro.com/nightly/apple/osx/arm64/latest/flycast_libretro.dylib.zip",
+    "sha256": "cbca16edc466eeefa63beca414a672fc4aaf80211131bbbacf9c7177a6c3cddb"
+  },
+  {
+    "core": "mednafen_saturn",
+    "url": "https://buildbot.libretro.com/nightly/apple/osx/arm64/latest/mednafen_saturn_libretro.dylib.zip",
+    "sha256": "045b82ccfe48ca87eea67b670e1c0861a58987ed0d3af82977f0822562b98356"
+  },
+  {
+    "core": "pcsx_rearmed",
+    "url": "https://buildbot.libretro.com/nightly/apple/osx/arm64/latest/pcsx_rearmed_libretro.dylib.zip",
+    "sha256": "0a679f6bf82c132873cd4a35faca349a6c4f6763223fe5de7fc956251e7af482"
+  },
+  {
+    "core": "play",
+    "url": "https://buildbot.libretro.com/nightly/apple/osx/arm64/latest/play_libretro.dylib.zip",
+    "sha256": "87414580931acd72fb3ce1f69cfc187df41af4923e5a81c8f4068d82ba60c4f7"
+  },
+  {
+    "core": "ppsspp",
+    "url": "https://buildbot.libretro.com/nightly/apple/osx/arm64/latest/ppsspp_libretro.dylib.zip",
+    "sha256": "c6520a631e68eb5d488c8241c5dca634a5a9122be7d672c80c3b2f31f0eff9c2"
+  },
+  {
+    "core": "mednafen_pce_fast",
+    "url": "https://buildbot.libretro.com/nightly/apple/osx/arm64/latest/mednafen_pce_fast_libretro.dylib.zip",
+    "sha256": "09cadc6325c5d4f4b0657c86c294e10f4695393c8c27e8f0ba03ed1d7d53365b"
+  },
+  {
+    "core": "stella",
+    "url": "https://buildbot.libretro.com/nightly/apple/osx/arm64/latest/stella_libretro.dylib.zip",
+    "sha256": "86fc196ba761bd5c08cc9c0f7eb99e702bd9be040427e1568d63226f58d3415f"
+  }
+]

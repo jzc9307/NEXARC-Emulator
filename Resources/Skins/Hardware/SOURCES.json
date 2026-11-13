@@ -1,0 +1,44 @@
+{
+  "nds": {
+    "source": "https://raw.githubusercontent.com/Duimon/Retroarch-Overlays/master/Logo/Nintendo_NDS/NDS.png",
+    "sha256": "b46acbcf68ee8db893500819356f9524db3117cfda4198549c5590014ccb40b5",
+    "author": "Duimon",
+    "license": "CC BY-NC-ND 4.0"
+  },
+  "n3ds": {
+    "source": "https://raw.githubusercontent.com/Duimon/Retroarch-Overlays/master/Logo/Nintendo_3DS/3DS_Vertical.png",
+    "sha256": "a262d6520cbe9c16963cc343f1a05494a12cbd738e80b39e08b2a51fe2eeca6a",
+    "author": "Duimon",
+    "license": "CC BY-NC-ND 4.0"
+  },
+  "gb": {
+    "source": "https://raw.githubusercontent.com/Duimon/Retroarch-Overlays/master/Logo/Nintendo_Game_Boy/Gameboy.png",
+    "sha256": "5fa6ab431393af6582f36ec5e89a8b966eb8d87e2323e4eeebe6b64f1edc7cce",
+    "author": "Duimon",
+    "license": "CC BY-NC-ND 4.0"
+  },
+  "gbc": {
+    "source": "https://raw.githubusercontent.com/Duimon/Retroarch-Overlays/master/Logo/Nintendo_Game_Boy_Color/GBC.png",
+    "sha256": "389f4531efed57e1c8aaf2d30b69786a94c4f7f1d8e1afc6ca1ebf338eee8a7a",
+    "author": "Duimon",
+    "license": "CC BY-NC-ND 4.0"
+  },
+  "gba": {
+    "source": "https://raw.githubusercontent.com/Duimon/Retroarch-Overlays/master/Logo/Nintendo_GBA/GBA.png",
+    "sha256": "8e594f9ffb7d2297e800ca3de0f02092da04ea6b8d2b45c5373b549fc5a54be6",
+    "author": "Duimon",
+    "license": "CC BY-NC-ND 4.0"
+  },
+  "psp": {
+    "source": "https://raw.githubusercontent.com/Duimon/Retroarch-Overlays/master/Logo/SONY_PSP/PSP.png",
+    "sha256": "cc89241a4355367e79eb9f23fd6811222cf1f9c0565fef32037fb10bc6bec4ee",
+    "author": "Duimon",
+    "license": "CC BY-NC-ND 4.0"
+  },
+  "gameGear": {
+    "source": "https://raw.githubusercontent.com/Duimon/Retroarch-Overlays/master/Logo/SEGA_Game_Gear/Game_Gear.png",
+    "sha256": "2136d89b91ced38df8ef69dbf9dd284087d16dca8b64e84d51f7e8af4306f6ce",
+    "author": "Duimon",
+    "license": "CC BY-NC-ND 4.0"
+  }
+}

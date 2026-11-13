@@ -1,0 +1,50 @@
+# Build output and local tools
+.DS_Store
+**/._*
+**/bin/
+**/obj/
+**/.vs/
+**/.idea/
+**/__pycache__/
+*.pyc
+/work/
+/dist/
+/.release/
+*.app/
+*.dmg
+*.dSYM/
+*.log
+*.xcuserstate
+# Local upstream binary archives are not source code.
+/Vendor/CoreArchives/
+# Personal content, credentials, game progress, and downloaded covers
+.env
+.env.*
+!.env.example
+*.keys
+*.pem
+*.p12
+*.p8
+*.mobileprovision
+*.srm
+*.sav
+*.state
+*.state.*
+/Games/
+/Saves/
+/States/
+/Covers/
+/Sessions/
+*.nsp
+*.xci
+*.nca
+*.nds
+*.3ds
+*.cia
+*.iso
+*.wbfs
+# Generated homebrew binaries outside the redistributable resource directory
+/Homebrew/**/build/
+/Homebrew/**/*.elf
+/Homebrew/**/*.nro
+/Homebrew/**/*.nacp

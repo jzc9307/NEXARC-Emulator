@@ -1,0 +1,99 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "NEXARC: Build current app",
+      "type": "process",
+      "command": "bash",
+      "args": [
+        "scripts/build.sh"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "NEXARC: Test app models",
+      "type": "process",
+      "command": "bash",
+      "args": [
+        "scripts/test.sh"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "NEXARC: Test release workflow",
+      "type": "process",
+      "command": "python3",
+      "args": [
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "Tests",
+        "-p",
+        "test_release.py"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "NEXARC: Preview next version",
+      "type": "process",
+      "command": "python3",
+      "args": [
+        "scripts/release.py",
+        "plan"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "NEXARC: Prepare patch release",
+      "type": "process",
+      "command": "python3",
+      "args": [
+        "scripts/release.py",
+        "prepare"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "NEXARC: Package committed release",
+      "type": "process",
+      "command": "python3",
+      "args": [
+        "scripts/release.py",
+        "package"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "NEXARC: Publish current release",
+      "type": "process",
+      "command": "python3",
+      "args": [
+        "scripts/release.py",
+        "publish"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    }
+  ]
+}

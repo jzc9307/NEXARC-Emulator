@@ -1,0 +1,7 @@
+#include <assert.h>
+#include <stdio.h>
+#include "../Sources/FastForward.c"
+bool NXCustomPointer(unsigned id,int16_t *value){return false;}
+static int16_t pad_host(unsigned port,unsigned device,unsigned index,unsigned id){return id==8;}
+static bool frontend(unsigned c,void*d){return true;}
+int main(){setenv("NEXARC_CAPTURE_VIDEO","1",1);nx_frontend=frontend;unsigned w=0,h=0,format=1;nx_capture_environment(10,&format);uint32_t rgb[2]={0x00FF0000,0x0000FF00};nx_video(rgb,2,1,8);unsigned char *out=NXCopyVideoRGBA(&w,&h);assert(w==2&&h==1&&out[0]==255&&out[1]==0&&out[5]==255&&out[7]==255);free(out);format=2;nx_capture_environment(10,&format);uint16_t packed[2]={0xF800,0x001F};nx_video(packed,2,1,4);out=NXCopyVideoRGBA(&w,&h);assert(out[0]==255&&out[6]==255);free(out);format=0;nx_capture_environment(10,&format);uint16_t rgb1555[2]={0x7C00,0x03E0};nx_video(rgb1555,2,1,4);out=NXCopyVideoRGBA(&w,&h);assert(out[0]==255&&out[5]==255);free(out);assert(NXVideoFrameCount()==3);nx_video((void*)-1,2,1,8);assert(NXCopyVideoRGBA(&w,&h)==NULL);setenv("NEXARC_GAMEPAD_MAP","8,1,2,3,4,5,6,7,0,9,10,11,12,13,14,15",1);nx_input_host=pad_host;assert(nx_input(0,1,0,0)==1);assert(nx_input(0,1,0,8)==0);assert(nx_input(0,1,0,256)==1);assert(nx_input(1,1,0,8)==1);puts("PASS: controller remapping preserves single-button, bitmask and other-player input. PASS: XRGB8888, RGB565 and RGB1555 video capture preserve color channels and frame count");}

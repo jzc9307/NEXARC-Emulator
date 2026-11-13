@@ -1,0 +1,18 @@
+{
+  "azahar": "Azahar",
+  "dolphin": "dolphin-emu",
+  "fceumm": "FCEUmm",
+  "flycast": "Flycast",
+  "gambatte": "Gambatte",
+  "genesis_plus_gx": "Genesis Plus GX",
+  "mednafen_pce_fast": "Beetle PCE Fast",
+  "mednafen_saturn": "Beetle Saturn",
+  "melondsds": "melonDS DS",
+  "mgba": "mGBA",
+  "parallel_n64": "ParaLLEl N64",
+  "pcsx_rearmed": "PCSX-ReARMed",
+  "play": "Play!",
+  "ppsspp": "PPSSPP",
+  "snes9x": "Snes9x",
+  "stella": "Stella"
+}
