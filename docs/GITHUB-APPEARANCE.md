@@ -4,11 +4,11 @@ The README, repository About panel, owner avatar and social preview are separate
 
 ## Description and topics
 
-On [jzc9307/NEXARC](https://github.com/jzc9307/NEXARC), use the gear beside **About** and set:
+On [jzc9307/NEXARC-Emulator](https://github.com/jzc9307/NEXARC-Emulator), use the gear beside **About** and set:
 
 **Description**
 
-> A native macOS multi-console emulation frontend with handheld skins, visual save slots, and controller support.
+> A multi-console game emulator for Apple Silicon Macs. Explore 21 console systems—from Game Boy and DS to PlayStation, PSP and Switch—with handheld skins, visual saves, fast-forward and controller support.
 
 **Topics**
 
@@ -19,8 +19,8 @@ These topics describe the frontend, not guaranteed compatibility with every titl
 With an authenticated GitHub CLI, the equivalent explicit metadata update is:
 
 ```sh
-gh repo edit jzc9307/NEXARC \
-  --description "A native macOS multi-console emulation frontend with handheld skins, visual save slots, and controller support." \
+gh repo edit jzc9307/NEXARC-Emulator \
+  --description "A multi-console game emulator for Apple Silicon Macs. Explore 21 console systems—from Game Boy and DS to PlayStation, PSP and Switch—with handheld skins, visual saves, fast-forward and controller support." \
   --add-topic macos --add-topic swift --add-topic swiftui --add-topic appkit \
   --add-topic emulation --add-topic emulator-frontend --add-topic retro-gaming \
   --add-topic apple-silicon --add-topic game-library --add-topic libretro

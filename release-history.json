@@ -1,8 +1,11 @@
 {
-  "repository": "jzc9307/NEXARC",
+  "repository": "jzc9307/NEXARC-Emulator",
   "versions": {
     "0.3.0": {
-      "status": "local"
+      "status": "published",
+      "published_at": "2026-11-13T05:47:53Z",
+      "commit": "59e034c1da7379dc965bf703507d6682bc616d39",
+      "dmg_sha256": "b725c6d85d7d32ba8812eb7f5eb33ff0077c93c335f810a75b9094e2025212bd"
     }
   }
 }

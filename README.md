@@ -34,15 +34,17 @@ handheld skins, visual save slots and controller support.</p>
 <!-- nexarc:version -->
 **Newest version: `0.3.0`**
 
-**The first public DMG has not been published yet.** The local installer is ready to build; public downloads will appear here once a release is published.
+### [Download NEXARC 0.3.0 for macOS](https://github.com/jzc9307/NEXARC-Emulator/releases/download/v0.3.0/NEXARC-0.3.0-macOS-arm64.dmg)
+
+Apple Silicon · macOS 14+ · DMG installer · **Latest release**
 
 ### All versions
 
 | Version | Date | Status | macOS installer | Release notes |
 |---|---|---|---|---|
-| `0.3.0` | 2026-11-13 | **Newest** · Local build | Not published | [Changes](CHANGELOG.md#030---2026-11-13) |
+| `0.3.0` | 2026-11-13 | **Latest** | [Download DMG](https://github.com/jzc9307/NEXARC-Emulator/releases/download/v0.3.0/NEXARC-0.3.0-macOS-arm64.dmg) | [What changed](https://github.com/jzc9307/NEXARC-Emulator/releases/tag/v0.3.0) |
 
-Every published version keeps its own DMG, source archive, checksums, and release notes. Older downloads remain available under [GitHub Releases](https://github.com/jzc9307/NEXARC/releases). Local or prepared versions are listed without a live download link until publication succeeds.
+Every published version keeps its own DMG and release page. Source downloads are available on the release page; automated releases also include an app ZIP and checksums. Older downloads remain available under [GitHub Releases](https://github.com/jzc9307/NEXARC-Emulator/releases). Local or prepared versions are listed without a live download link until publication succeeds.
 <!-- /nexarc:version -->
 
 **You do not need VS Code, Xcode or .NET to run a packaged release.** Download its DMG, then:
@@ -55,7 +57,7 @@ Every published version keeps its own DMG, source archive, checksums, and releas
 | Requirement | Details |
 |---|---|
 | Mac | Apple Silicon; macOS 14 or later |
-| Download | Each published version has its own DMG; ZIP and source archives are also provided |
+| Download | Each published version has its own DMG; source downloads are available on the release page |
 | Updates | Quit the running game and NEXARC before replacing the app; the library remains in Application Support |
 | Signing | Locally signed, currently **not notarized** by Apple |
 

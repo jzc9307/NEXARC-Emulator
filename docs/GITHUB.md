@@ -22,7 +22,7 @@ git remote add origin https://github.com/YOUR-ACCOUNT/NEXARC.git
 
 Install GitHub CLI from https://cli.github.com/ and sign in with `gh auth login`. Tokens belong in the system credential store, never in source files. VS Code's GitHub sign-in can push source commits; the release script additionally needs `gh` for release assets and Latest labeling.
 
-The local repository now has `https://github.com/jzc9307/NEXARC.git` as origin. No GitHub Release has been published by this setup. Sign-in credentials remain outside the repository.
+The local repository now has `https://github.com/jzc9307/NEXARC-Emulator.git` as origin. The v0.3.0 release was manually published with its DMG on 13 November 2026. Sign-in credentials remain outside the repository.
 
 ## Prepare and publish a version
 

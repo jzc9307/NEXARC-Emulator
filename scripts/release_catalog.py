@@ -9,7 +9,7 @@ MARKER=r'<!-- nexarc:version -->.*?<!-- /nexarc:version -->'
 
 def load(root):
     path=root/CATALOG
-    data=json.loads(path.read_text()) if path.exists() else {'repository':'jzc9307/NEXARC','versions':{}}
+    data=json.loads(path.read_text()) if path.exists() else {'repository':'jzc9307/NEXARC-Emulator','versions':{}}
     if not re.fullmatch(r'[\w.-]+/[\w.-]+',data.get('repository','')):raise ValueError('Invalid release repository in release-history.json.')
     if not isinstance(data.get('versions'),dict):raise ValueError('release-history.json needs a versions object.')
     for version,record in data['versions'].items():
@@ -64,7 +64,7 @@ def render(data, entries, current):
 
 {table(data,entries,current)}
 
-Every published version keeps its own DMG, source archive, checksums, and release notes. Older downloads remain available under [GitHub Releases]({base}/releases). Local or prepared versions are listed without a live download link until publication succeeds.
+Every published version keeps its own DMG and release page. Source downloads are available on the release page; automated releases also include an app ZIP and checksums. Older downloads remain available under [GitHub Releases]({base}/releases). Local or prepared versions are listed without a live download link until publication succeeds.
 <!-- /nexarc:version -->'''
 
 
