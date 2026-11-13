@@ -58,6 +58,9 @@ find "$NEXARC_APP/Contents/Resources/Cores" -name '*.dylib' -exec codesign --for
 find "$NEXARC_APP/Contents/Helpers/RetroArch.app/Contents/Frameworks" -type f \( -name '*.dylib' -o -name 'MoltenVK' \) -exec codesign --force --sign - {} \;
 find "$NEXARC_APP/Contents/Helpers/RetroArch.app/Contents/Frameworks" -maxdepth 1 -name '*.framework' -exec codesign --force --sign - {} \;
 codesign --force --sign - --entitlements "$NEXARC_SOURCE/Resources/Core.entitlements" "$NEXARC_APP/Contents/Helpers/RetroArch.app"
+# Documentation screenshots and Finder previews can carry com.apple.FinderInfo
+# or resource forks. Clean only the disposable staging bundle before signing.
+xattr -cr "$NEXARC_APP"
 codesign --force --sign - "$NEXARC_APP"
 codesign --verify --deep --strict "$NEXARC_APP"
 touch "$NEXARC_APP"
